@@ -1,84 +1,146 @@
 // Toggle class active
 
 const navbarNav = document.querySelector(".navbar-nav");
+const hamburgerBtn = document.querySelector("#hamburger-menu");
 
-// ketika hamburger menu di klik
-document.querySelector("#hamburger-menu").onclick = () => {
-  navbarNav.classList.toggle("active");
-};
+if (navbarNav && hamburgerBtn) {
+  hamburgerBtn.onclick = () => {
+    navbarNav.classList.toggle("active");
+  };
 
-// klik di luar sidebar untuk menghilangkan nav
-
-const hamburger = document.querySelector("#hamburger-menu");
-
-document.addEventListener("click", function (e) {
-  if (!hamburger.contains(e.target) && !navbarNav.contains(e.target)) {
-    navbarNav.classList.remove("active");
-  }
-});
-
+  document.addEventListener("click", (e) => {
+    if (!hamburgerBtn.contains(e.target) && !navbarNav.contains(e.target)) {
+      navbarNav.classList.remove("active");
+    }
+  });
+}
 
 // About Slide Gallery
 
-const track = document.querySelector('.about-slider .slider-track');
-const slides = document.querySelectorAll('.about-slider .slide');
+const track = document.querySelector(".about-slider .slider-track");
+const slides = document.querySelectorAll(".about-slider .slide");
 
-let index = 0;
-let startX = 0;
-let isDragging = false;
-let slideWidth = slides[0].offsetWidth;
+if (!track || slides.length === 0) {
+  console.warn("Slider tidak ditemukan — dilewati");
+} else {
+  let index = 0;
+  let startX = 0;
+  let startY = 0;
+  let isDragging = false;
 
-function visibleSlides() {
-  if (window.innerWidth <= 576) return 1;
-  if (window.innerWidth <= 992) return 2;
-  return 3;
-}
+  const SWIPE_THRESHOLD = 60;
 
-function moveSlide() {
-  slideWidth = slides[0].offsetWidth;
-  track.style.transform = `translateX(-${index * slideWidth}px)`;
-}
-
-/* Auto Slide */
-setInterval(() => {
-  if (index < slides.length - visibleSlides()) {
-    index++;
-  } else {
-    index = 0;
+  function visibleSlides() {
+    if (window.innerWidth <= 450) return 1;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
   }
-  moveSlide();
-}, 3000);
 
-/* Resize */
-window.addEventListener('resize', moveSlide);
+  function moveSlide() {
+    const slideWidth = slides[0].offsetWidth;
+    const maxIndex = Math.max(0, slides.length - visibleSlides());
 
-/* Touch Swipe */
-track.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
+    if (index > maxIndex) index = maxIndex;
+    if (index < 0) index = 0;
 
-track.addEventListener('touchend', e => {
-  let endX = e.changedTouches[0].clientX;
-  handleSwipe(startX, endX);
-});
-
-/* Mouse Drag */
-track.addEventListener('mousedown', e => {
-  isDragging = true;
-  startX = e.clientX;
-});
-
-track.addEventListener('mouseup', e => {
-  if (!isDragging) return;
-  isDragging = false;
-  handleSwipe(startX, e.clientX);
-});
-
-function handleSwipe(start, end) {
-  if (start - end > 50 && index < slides.length - visibleSlides()) {
-    index++;
-  } else if (end - start > 50 && index > 0) {
-    index--;
+    track.style.transform = `translateX(-${index * slideWidth}px)`;
   }
+
+  function nextSlide() {
+    if (index < slides.length - visibleSlides()) {
+      index++;
+    } else {
+      index = 0;
+    }
+    moveSlide();
+  }
+
+  function prevSlide() {
+    if (index > 0) index--;
+    moveSlide();
+  }
+
+  // ===== AUTO SLIDE =====
+  let autoSlide = setInterval(nextSlide, 3000);
+
+  function resetAuto() {
+    clearInterval(autoSlide);
+    autoSlide = setInterval(nextSlide, 3000);
+  }
+
+  // ===== RESIZE (DEBOUNCE) =====
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(moveSlide, 150);
+  });
+
+  // =========================
+  // TOUCH EVENTS
+  // =========================
+
+  track.addEventListener(
+    "touchstart",
+    (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    },
+    { passive: true },
+  );
+
+  track.addEventListener("touchend", (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    handleSwipe(endX, endY);
+    resetAuto();
+  });
+
+  // =========================
+  // MOUSE DRAG
+  // =========================
+
+  track.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
+
+  window.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    handleSwipe(e.clientX, e.clientY);
+    resetAuto();
+  });
+
+  track.addEventListener("mouseleave", () => {
+    if (isDragging) {
+      isDragging = false;
+      resetAuto();
+    }
+  });
+
+  // =========================
+  // PAUSE ON HOVER
+  // =========================
+
+  track.addEventListener("mouseenter", () => clearInterval(autoSlide));
+  track.addEventListener("mouseleave", resetAuto);
+
+  // =========================
+  // SWIPE LOGIC
+  // =========================
+
+  function handleSwipe(endX, endY) {
+    // abaikan swipe vertikal
+    if (Math.abs(endY - startY) > Math.abs(endX - startX)) return;
+
+    if (startX - endX > SWIPE_THRESHOLD) {
+      nextSlide();
+    } else if (endX - startX > SWIPE_THRESHOLD) {
+      prevSlide();
+    }
+  }
+
+  // init posisi awal
   moveSlide();
 }

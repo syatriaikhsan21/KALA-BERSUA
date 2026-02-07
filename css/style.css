@@ -1,6 +1,6 @@
 :root {
   --primary: #f5c542;
-  --bg: #121212;
+  --bg: black;
 }
 
 * {
@@ -34,6 +34,7 @@ body {
   left: 0;
   right: 0;
   z-index: 9999;
+  backdrop-filter: blur(8px);
 }
 
 .navbar .navbar-logo {
@@ -41,8 +42,6 @@ body {
   font-weight: 600;
   color: #fff;
 }
-
-
 
 .navbar .navbar-nav a {
   color: #fff;
@@ -85,14 +84,14 @@ body {
 
 .hero {
   min-height: 100svh;
-
+  max-width: none;
   display: flex;
   align-items: center;
   /* background-color: #f5c542; */
   background-image: url("../img/kopi.png");
   background-repeat: no-repeat;
   background-size: cover;
-  background-position:  center 30%;
+  background-position: center 30%;
   position: relative;
 }
 
@@ -113,11 +112,10 @@ body {
 .hero .content {
   padding: 1.4rem 6%;
   max-width: 60rem;
-  
 }
 
 .hero .content h1 {
-  font-size: 5rem;
+  font-size: clamp(3rem, 6vw, 5rem);
   text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
   line-height: 1.2;
 }
@@ -133,7 +131,7 @@ body {
   line-height: 1.4;
   font-weight: 400;
   text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
-  mix-blend-mode: difference;
+  mix-blend-mode: normal;
 }
 
 .hero .content .cta {
@@ -183,7 +181,7 @@ body {
 .about,
 .menu,
 .contact {
-  padding: 8rem 7% 1.4rem;
+  padding: 8rem 7% 6rem;
 }
 
 .about h2 {
@@ -245,6 +243,15 @@ body {
 .about-slider .slider-track {
   display: flex;
   transition: transform 0.5s ease;
+  touch-action: pan-y;
+  cursor: grab;
+
+  scroll-behavior: smooth;
+}
+
+.about-slider .slider-track:active {
+  cursor: grabbing;
+
 }
 
 .about-slider .slide {
@@ -315,7 +322,7 @@ body {
 
   position: relative;
   width: 100%;
-  height: 500px;
+  height: clamp(300px, 50vh, 500px);
 }
 
 .contact .row iframe {
@@ -460,7 +467,7 @@ body {
     position: absolute;
     top: 100%;
     right: -100%;
-    background-color: #fff;
+    background-color: #111;
     width: 30rem;
     height: 100vh;
     transition: 0.3s;
@@ -473,7 +480,7 @@ body {
   .navbar .navbar-nav a {
     display: block;
     color: var(--bg);
-    margin: 1.5;
+    margin: 1.5rem;
     padding: 0.5rem;
     font-size: 1.5rem;
   }
@@ -512,6 +519,10 @@ body {
     flex: 0 0 50%;
   }
 
+  .about-slider img {
+    height: 320px;
+  }
+
   .footer-container {
     display: flex;
     flex-wrap: wrap;
@@ -526,12 +537,16 @@ body {
     font-size: 55%;
   }
 
+.about, .menu, .contact {
+    padding: 6rem 5% 4rem;
+  }
+
   .about-slider .slide {
     flex: 0 0 100%;
   }
 
   .about-slider img {
-    height: 180px;
+    height: 260px;
   }
 
   .footer-container {
