@@ -15,6 +15,17 @@ if (navbarNav && hamburgerBtn) {
   });
 }
 
+
+// MAP & FOOTER
+
+document.querySelectorAll('.map-overlay, .footer-social a').forEach(el => {
+  el.addEventListener('touchend', (e) => {
+    e.preventDefault();       // cegah click default
+    e.stopPropagation();      // cegah trigger ganda
+    window.open(el.href, '_blank');
+  });
+});
+
 // About Slide Gallery
 
 const track = document.querySelector(".about-slider .slider-track");
@@ -37,7 +48,7 @@ if (!track || slides.length === 0) {
   }
 
   function moveSlide() {
-    const slideWidth = slides[0].offsetWidth;
+    const slideWidth = track.offsetWidth / visibleSlides();
     const maxIndex = Math.max(0, slides.length - visibleSlides());
 
     if (index > maxIndex) index = maxIndex;
@@ -72,59 +83,37 @@ if (!track || slides.length === 0) {
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(moveSlide, 150);
+
+    resizeTimer = setTimeout(() => {
+      index = 0;
+      moveSlide();
+    }, 150);
   });
 
   // =========================
-  // TOUCH EVENTS
+  // POINTER EVENTS (menggantikan touch + mouse)
   // =========================
 
-  track.addEventListener(
-    "touchstart",
-    (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-    },
-    { passive: true },
-  );
-
-  track.addEventListener("touchend", (e) => {
-    const endX = e.changedTouches[0].clientX;
-    const endY = e.changedTouches[0].clientY;
-    handleSwipe(endX, endY);
-    resetAuto();
-  });
-
-  // =========================
-  // MOUSE DRAG
-  // =========================
-
-  track.addEventListener("mousedown", (e) => {
+  track.addEventListener("pointerdown", (e) => {
     isDragging = true;
+    clearInterval(autoSlide);
     startX = e.clientX;
     startY = e.clientY;
   });
 
-  window.addEventListener("mouseup", (e) => {
+  track.addEventListener("pointerup", (e) => {
     if (!isDragging) return;
     isDragging = false;
     handleSwipe(e.clientX, e.clientY);
     resetAuto();
   });
 
-  track.addEventListener("mouseleave", () => {
+  track.addEventListener("pointerleave", () => {
     if (isDragging) {
       isDragging = false;
       resetAuto();
     }
   });
-
-  // =========================
-  // PAUSE ON HOVER
-  // =========================
-
-  track.addEventListener("mouseenter", () => clearInterval(autoSlide));
-  track.addEventListener("mouseleave", resetAuto);
 
   // =========================
   // SWIPE LOGIC
