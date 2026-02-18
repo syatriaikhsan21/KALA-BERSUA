@@ -15,14 +15,13 @@ if (navbarNav && hamburgerBtn) {
   });
 }
 
-
 // MAP & FOOTER
 
-document.querySelectorAll('.map-overlay, .footer-social a').forEach(el => {
-  el.addEventListener('touchend', (e) => {
-    e.preventDefault();       // cegah click default
-    e.stopPropagation();      // cegah trigger ganda
-    window.open(el.href, '_blank');
+document.querySelectorAll(".map-overlay, .footer-social a").forEach((el) => {
+  el.addEventListener("touchend", (e) => {
+    e.preventDefault(); // cegah click default
+    e.stopPropagation(); // cegah trigger ganda
+    window.open(el.href, "_blank");
   });
 });
 
@@ -133,3 +132,41 @@ if (!track || slides.length === 0) {
   // init posisi awal
   moveSlide();
 }
+
+// Contact Form
+
+const form = document.getElementById("contact-form");
+const responseMessage = document.getElementById("form-response");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+  const message = document.getElementById("message").value;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, phone, message }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      responseMessage.textContent = "Pesan berhasil dikirim!";
+      responseMessage.style.color = "lightgreen";
+      form.reset();
+    } else {
+      responseMessage.textContent = "Gagal mengirim pesan.";
+      responseMessage.style.color = "red";
+    }
+  } catch (error) {
+    responseMessage.textContent = "Terjadi kesalahan koneksi.";
+    responseMessage.style.color = "red";
+  }
+});
