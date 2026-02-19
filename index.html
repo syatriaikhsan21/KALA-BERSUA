@@ -93,10 +93,79 @@
                     Nikmati suasana hangat dan kebersamaan hanya di Kala Bersua.
                 </p>
 
-                <a href="#contact" class="ramadan-btn">Reservasi Sekarang</a>
+                <a href="#booking" class="ramadan-btn">Reservasi Sekarang</a>
             </div>
 
         </div>
+
+        <!-- Booking Section Start -->
+        <section id="booking" class="booking">
+            <h2><span>Reservasi</span> Meja</h2>
+            <p class="booking-subtitle">
+                Silakan isi formulir berikut untuk melakukan reservasi meja sekaligus pemesanan menu.
+            </p>
+
+            <form id="booking-form" class="booking-form">
+
+                <!-- Data Diri -->
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="bk-name" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor WhatsApp</label>
+                    <input type="text" id="bk-phone" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Email (Opsional)</label>
+                    <input type="email" id="bk-email" />
+                </div>
+
+                <!-- Detail Reservasi -->
+                <div class="form-group">
+                    <label>Tanggal Reservasi</label>
+                    <input type="date" id="bk-date" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Jam Reservasi</label>
+                    <input type="time" id="bk-time" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Jumlah Orang</label>
+                    <input type="number" id="bk-guests" min="1" required />
+                </div>
+
+                <!-- Pilihan Menu -->
+                <div class="form-group full">
+                    <label>Pilih Menu (boleh lebih dari satu)</label>
+
+                    <div class="menu-options">
+                        <label><input type="checkbox" value="Paket 1 Ramadan" /> Paket 1 Ramadan</label>
+                        <label><input type="checkbox" value="Paket 2 Ramadan" /> Paket 2 Ramadan</label>
+                        <label><input type="checkbox" value="Paket 3 Ramadan" /> Paket 3 Ramadan</label>
+                        <label><input type="checkbox" value="Paket 4 Ramadan" /> Paket 4 Ramadan</label>
+                        <label><input type="checkbox" value="Paket 5 Ramadan" /> Paket 5 Ramadan</label>
+                        <label><input type="checkbox" value="Paket 6 Ramadan" /> Paket 6 Ramadan</label>
+                    </div>
+                </div>
+
+                <!-- Catatan -->
+                <div class="form-group full">
+                    <label>Catatan Tambahan</label>
+                    <textarea id="bk-notes" rows="4"></textarea>
+                </div>
+
+                <button type="submit" class="booking-btn">Kirim Reservasi</button>
+
+                <p id="booking-response" class="booking-response"></p>
+            </form>
+        </section>
+        <!-- Booking Section End -->
+
 
 
         <div class="about-slider">
@@ -216,12 +285,23 @@
 
     <!-- Footer selesai -->
 
+    <!-- POP UP RESERVASI -->
+    <div id="success-modal" class="success-modal">
+        <div class="success-box">
+            <h3>Reservasi Berhasil </h3>
+            <p>Terima Kasih</p>
+            <button id="close-success">Tutup</button>
+        </div>
+    </div>
     <!-- Icons -->
     <script>
         feather.replace();
     </script>
 
     <script src="js/script.js"></script>
+
+
+
 </body>
 
 </html>
